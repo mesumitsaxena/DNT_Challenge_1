@@ -1,0 +1,106 @@
+﻿@model Challenge1.UI.Models.UserModel
+
+@{
+    ViewData["Title"] = "SignUp";
+}
+
+<h1>SignUp</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SignUp">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+            <label asp-for="CountryId" class="control-label"></label>
+            <input asp-for="CountryId" class="form-control" />
+            <span asp-validation-for="CountryId" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <label asp-for="CountryId" class="control-label"></label>
+                <select asp-for="CountryId" class="form-control" asp-items="@(new SelectList(ViewBag.CountryList,"Id","Name"))">
+                    <option value="">--Select Country--</option>
+                </select>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CityId" class="control-label"></label>
+                <select asp-for="CityId" class="form-control" asp-items="@(new SelectList(String.Empty,"Id","Name"))">
+                    <option value="">--Select City--</option>
+                </select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="CityId" class="control-label"></label>
+                <input asp-for="CityId" class="form-control" />
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Terms" /> @Html.DisplayNameFor(model => model.Terms)
+                </label>
+                <span asp-validation-for="Terms" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="SignUp" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+        jQuery.validator.unobtrusive.adapters.add("checkbox", function (options) {
+            if (options.element.tagName.toUpperCase() === "INPUT" && options.element.type.toUpperCase() == "CHECKBOX") {
+                options.rules["required"] = true;
+                if (options.message) {
+                    options.messages["required"] = options.message;
+                }
+            }
+        });
+    $(document).ready(function () {
+        $('#CountryId').change(function () {
+            var Url = '@Url.Content("~/")' + "Account/GetCities";
+            var ddlSource = "#CountryId";
+            $.getJSON(Url, { CountryId: $(ddlSource).val() }, function (data) {
+                var items = '';
+                $("#CityId").empty();
+                items = "<option value=''>Select City</option>";
+                $.each(data, function (i, city) {
+                    items += "<option value='" + city.value + "'>" + city.text + "</option>";
+                });
+                $("#CityId").html(items);
+            });
+        });
+
+    });
+</script>
+}
