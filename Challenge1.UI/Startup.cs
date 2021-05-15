@@ -50,7 +50,7 @@ namespace Challenge1.UI
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=SignUp}/{id?}");
             });
         }
     }
