@@ -28,6 +28,59 @@ namespace Challenge1.UI.Controllers
             return View();
 
         }
+        public IActionResult Edit(int id)
+        {
+            string userid = id.ToString();
+            var user = _authService.GetUser(userid);
+            UserModel model = new UserModel()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                CountryName = GetCountryName(user.CountryId),
+                CityName = GetCityName(user.CityId),
+                CountryId = user.CountryId,
+                CityId = user.CityId
+            };
+            ViewBag.CountryList = _locationService.GetCountries();
+            //ViewBag.CityList = _catalogeService.GetItemTypes();
+            return View("SignUp",model);
+
+        }
+        private string GetCityName(int Id)
+        {
+           City city= _locationService.GetCityByid(Id);
+            return city.Name;
+        }
+        private string GetCountryName(int Id)
+        {
+            Country country = _locationService.GetCountryByid(Id);
+            return country.Name;
+        }
+        public IActionResult Index()
+        {
+            var users = _authService.GetAllUsers();
+            List<UserModel> models = new List<UserModel>();
+            foreach(var user in users)
+            {
+                UserModel model = new UserModel()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    CountryName=GetCountryName(user.CountryId),
+                    CityName=GetCityName(user.CityId),
+                    CountryId = user.CountryId,
+                    CityId = user.CityId
+
+                };
+                models.Add(model);
+                
+            }
+            return View(models);
+        }
         public JsonResult GetCities(int CountryId)
         {
             IEnumerable<City> city = new List<City>();
@@ -70,6 +123,8 @@ namespace Challenge1.UI.Controllers
         [HttpPost]
         public IActionResult SignUp(UserModel model)
         {
+            ModelState.Remove("Id");
+
             if (ModelState.IsValid)
             {
                 User user = new User
@@ -84,7 +139,7 @@ namespace Challenge1.UI.Controllers
                 var result = _authService.CreateUser(user, model.Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index","Account");
                 }
                 foreach (var error in result.Errors)
                 {
@@ -93,6 +148,37 @@ namespace Challenge1.UI.Controllers
             }
             ViewBag.CountryList = _locationService.GetCountries();
             return View();
+        }
+        [HttpPost]
+        public IActionResult Edit(UserModel model)
+        {
+            User user = _authService.GetUser(model.Id.ToString());
+            ModelState.Remove("Password");
+            ModelState.Remove("ConfirmPassword");
+            ModelState.Remove("CountryName");
+            ModelState.Remove("CityName");
+            if (ModelState.IsValid)
+            {
+
+                user.Name = model.Name;
+                user.UserName = model.Email;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.CountryId = model.CountryId;
+                user.CityId = model.CityId;
+                
+                var result = _authService.UpdateUser(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Account");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            ViewBag.CountryList = _locationService.GetCountries();
+            return View("SignUp", model);
         }
     }
 }

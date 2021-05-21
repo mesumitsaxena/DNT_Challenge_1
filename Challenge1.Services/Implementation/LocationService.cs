@@ -25,9 +25,19 @@ namespace Challenge1.Services.Implementation
             return _cityRepo.GetAll().Where(c=>c.CountryId==CountryId).ToList();
         }
 
+        public City GetCityByid(int Id)
+        {
+            return _cityRepo.Find(Id);
+        }
+
         public IEnumerable<Country> GetCountries()
         {
             return _countryRepo.GetAll();
+        }
+
+        public Country GetCountryByid(int Id)
+        {
+            return _countryRepo.Find(Id);
         }
     }
 }

@@ -30,9 +30,13 @@ namespace Challenge1.UI.Models
         [Display(Name = "Country")]
         [Required(ErrorMessage = "Please Select Country")]
         public int CountryId { get; set; }
+        [Display(Name = "Country")]
+        public string CountryName { get; set; }
         [Display(Name = "City")]
         [Required(ErrorMessage = "Please Select City")]
         public int CityId { get; set; }
+        [Display(Name = "City")]
+        public string CityName { get; set; }
         [RegularExpression("^[6,7,8,9]\\d{9}$", ErrorMessage = "Please Enter Valid Contact.")]
         public string PhoneNumber { get; set; }
         [CheckBoxValidator(ErrorMessage = "Please Accept Terms!!")]

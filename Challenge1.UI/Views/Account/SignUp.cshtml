@@ -1,15 +1,16 @@
 ﻿@model Challenge1.UI.Models.UserModel
 
 @{
-    ViewData["Title"] = "SignUp";
+    ViewData["Title"] = Model == null ? "SignUp" : "Edit";
 }
 
-<h1>SignUp</h1>
+<h1>@ViewData["Title"]</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="SignUp">
+        <form asp-action="@ViewData["Title"]">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
 
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
@@ -21,21 +22,28 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+            @if (Model != null)
+            {
+                <input type="hidden" id="CityId_J" value="@Model.CityId" />
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            }
             @*<div class="form-group">
-            <label asp-for="CountryId" class="control-label"></label>
-            <input asp-for="CountryId" class="form-control" />
-            <span asp-validation-for="CountryId" class="text-danger"></span>
-        </div>*@
+                    <label asp-for="CountryId" class="control-label"></label>
+                    <input asp-for="CountryId" class="form-control" />
+                    <span asp-validation-for="CountryId" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <label asp-for="CountryId" class="control-label"></label>
                 <select asp-for="CountryId" class="form-control" asp-items="@(new SelectList(ViewBag.CountryList,"Id","Name"))">
@@ -51,10 +59,10 @@
                 <span asp-validation-for="CityId" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-                <label asp-for="CityId" class="control-label"></label>
-                <input asp-for="CityId" class="form-control" />
-                <span asp-validation-for="CityId" class="text-danger"></span>
-            </div>*@
+                    <label asp-for="CityId" class="control-label"></label>
+                    <input asp-for="CityId" class="form-control" />
+                    <span asp-validation-for="CityId" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <input asp-for="PhoneNumber" class="form-control" />
@@ -67,7 +75,7 @@
                 <span asp-validation-for="Terms" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="SignUp" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -77,7 +85,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-<script>
+    <script>
         jQuery.validator.unobtrusive.adapters.add("checkbox", function (options) {
             if (options.element.tagName.toUpperCase() === "INPUT" && options.element.type.toUpperCase() == "CHECKBOX") {
                 options.rules["required"] = true;
@@ -87,7 +95,9 @@
             }
         });
     $(document).ready(function () {
-        $('#CountryId').change(function () {
+        var model = '@Model';
+        if(model != '') {
+
             var Url = '@Url.Content("~/")' + "Account/GetCities";
             var ddlSource = "#CountryId";
             $.getJSON(Url, { CountryId: $(ddlSource).val() }, function (data) {
@@ -98,9 +108,31 @@
                     items += "<option value='" + city.value + "'>" + city.text + "</option>";
                 });
                 $("#CityId").html(items);
+                var CityId =$('#CityId_J').val();
+                $("#CityId").val(CityId);
+            });
+
+
+
+        }
+
+        $('#CountryId').change(function () {
+            //$.fn.CityDropDown();
+            var Url = '@Url.Content("~/")' + "Account/GetCities";
+            var ddlSource = "#CountryId";
+            $.getJSON(Url, { CountryId: $(ddlSource).val() }, function (data) {
+                var items = '';
+                $("#CityId").empty();
+                items = "<option value=''>Select City</option>";
+                $.each(data, function (i, city) {
+                    items += "<option value='" + city.value + "'>" + city.text + "</option>";
+                });
+                $("#CityId").html(items);
+
+
             });
         });
 
     });
-</script>
+    </script>
 }

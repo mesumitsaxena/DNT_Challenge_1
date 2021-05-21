@@ -12,6 +12,9 @@ namespace Challenge1.Services.Interfaces
     {
         IdentityResult CreateUser(User user, string Password);
         User AuthenticateUser(String UserName, string Password);
-        User GetUser(string UserName);
+        User GetUser(string Id);
+        IEnumerable<User> GetAllUsers();
+        IdentityResult UpdateUser(User model);
+
     }
 }

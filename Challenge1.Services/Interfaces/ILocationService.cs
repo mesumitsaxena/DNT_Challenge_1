@@ -11,5 +11,8 @@ namespace Challenge1.Services.Interfaces
     {
         IEnumerable<Country> GetCountries();
         IEnumerable<City> GetCitiesBasedonCountry(int CountryId);
+        Country GetCountryByid(int Id);
+        City GetCityByid(int Id);
+
     }
 }

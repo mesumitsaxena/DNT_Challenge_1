@@ -23,7 +23,7 @@ namespace Challenge1.Services.Implementation
         }
         public User AuthenticateUser(string UserName, string Password)
         {
-            var result = _signInManager.PasswordSignInAsync(UserName, Password,false,false).Result;
+            var result = _signInManager.PasswordSignInAsync(UserName, Password, false, false).Result;
             if (result.Succeeded)
             {
                 var user = _userManager.FindByNameAsync(UserName).Result;
@@ -31,7 +31,7 @@ namespace Challenge1.Services.Implementation
                 user.Roles = roles.ToArray();
                 return user;
             }
-            
+
             return null;
         }
 
@@ -47,10 +47,19 @@ namespace Challenge1.Services.Implementation
             }
             return result;
         }
-
-        public User GetUser(string UserName)
+        public IdentityResult UpdateUser(User model)
         {
-            return _userManager.FindByNameAsync(UserName).Result; 
+            var res = _userManager.UpdateAsync(model).Result;
+            return res;
+        }
+
+        public User GetUser(string Id)
+        {
+            return _userManager.FindByIdAsync(Id).Result;
+        }
+        public IEnumerable<User> GetAllUsers()
+        {
+            return _userManager.Users.ToList();
         }
     }
 }
