@@ -52,6 +52,11 @@ namespace Challenge1.Services.Implementation
             var res = _userManager.UpdateAsync(model).Result;
             return res;
         }
+        public IdentityResult DeleteUser(User model)
+        {
+            var res = _userManager.DeleteAsync(model).Result;
+            return res;
+        }
 
         public User GetUser(string Id)
         {

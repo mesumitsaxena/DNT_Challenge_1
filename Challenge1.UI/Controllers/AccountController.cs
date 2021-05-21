@@ -48,6 +48,14 @@ namespace Challenge1.UI.Controllers
             return View("SignUp",model);
 
         }
+        public IActionResult Delete(int id)
+        {
+            string userid = id.ToString();
+            var user = _authService.GetUser(userid);
+            var res = _authService.DeleteUser(user);
+            return RedirectToAction("Index");
+
+        }
         private string GetCityName(int Id)
         {
            City city= _locationService.GetCityByid(Id);

@@ -15,6 +15,7 @@ namespace Challenge1.Services.Interfaces
         User GetUser(string Id);
         IEnumerable<User> GetAllUsers();
         IdentityResult UpdateUser(User model);
+        IdentityResult DeleteUser(User model);
 
     }
 }
